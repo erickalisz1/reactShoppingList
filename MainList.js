@@ -13,82 +13,91 @@ import History from './History';
 
 const MainList = (props) => {
 
-    const {itemsList} = props;
+    const { itemsList } = props;
 
-    //filtering data to display only not bought items
-
-    itemsList.forEach(element => {
-        if(element.isCompleted === 1)
-        {//if it has been completed
-            itemsList.splice(itemsList.indexOf(element) , 1);//remove it
-        }
-        return itemsList;
-    });
-
-    const [courseGoals, setCourseGoals] = useState([]);//empty array, which will grow as we press btn
+    // const [courseGoals, setCourseGoals] = useState([]);//empty array, which will grow as we press btn
     const [displayContainer, setDisplayContainer] = useState(false);
     const [displayHistory, setDisplayHistory] = useState(false);
 
+    //filtering data to display only not bought items
+
+    let filteredList = [];
+    
+    itemsList.forEach(element => {
+        if (element.isCompleted === 0) {//if it has been completed
+            // console.log(element);
+            filteredList.push(element);//remove it
+        }
+    });
+
     //onClick function
-    const addGoalHandler = goalTitle => {
-        setCourseGoals(currentGoals => [
-            ...currentGoals,
-            {
-                id: Math.random().toString(),
-                value: goalTitle
-            }
-        ]);//... is called spread operator, native to JS. it creates a new array with the element you're adding at the end
+    const addItemHandler = () => {
         setDisplayContainer(false);
     };
 
-    const displayHistoryHandler = () =>{
+    const displayHistoryHandler = () => {
         setDisplayHistory(false);
     };
 
-    const removeGoalHandler = firebaseKey => {
-        setCourseGoals(currentGoals => {
-            return currentGoals.filter((goal) => goal.id !== firebaseKey);
-        });
+    const removeGoalHandler = (firebaseKey, shoppingItem) => {
 
-        firebase.database()
-            .ref('shopping/')//table name
-            .child(firebaseKey)//entry to remove
-            .remove()
-            .then(() => {
-                console.log('DELETED!');
-            }).catch((error) => {
-                console.log(error);
-            });;
+        let now = new Date();
+
+        firebase.database().ref('shopping/'+firebaseKey).set(
+            {
+                enteredDate:shoppingItem.enteredDate,
+                itemName:shoppingItem.itemName,
+                isCompleted: 1,
+                completedDate: (now.getDay()) + '/' + (now.getMonth() + 1) + '/' + now.getFullYear() +
+                ' at ' +
+                now.getHours() + 'h' + now.getMinutes() + 'm' + now.getSeconds() + 's',
+            }
+        ).then(() => {
+            console.log('Updated !');
+        }).catch((error) => {
+            console.log(error);
+        });
+        
+        // firebase.database()
+        //     .ref('shopping/')//table name
+        //     .child(firebaseKey)//entry to remove
+        //     .remove()
+        //     .then(() => {
+        //         console.log('DELETED!');
+        //     }).catch((error) => {
+        //         console.log(error);
+        //     });
     }
 
     const cancelGoal = () => {
         setDisplayContainer(false);
     };
 
-    console.log(itemsList);
-
     return (
         <View style={styles.screen} >
 
-            <InputItem visible={displayContainer} onAddGoal={addGoalHandler} onCancel={cancelGoal} />
-            <History visible={displayHistory} onClose={displayHistoryHandler} list = {itemsList}/>
+            <InputItem visible={displayContainer} onAddGoal={addItemHandler} onCancel={cancelGoal} />
+            <History visible={displayHistory} onClose={displayHistoryHandler} list={itemsList} />
+
+            <Text style={styles.titleText}>Items pending: {filteredList.length} </Text>
 
             <View style={styles.listContainer}>
                 <FlatList
                     keyExtractor={item => item.fireID}
                     style={styles.list}
-                    data={itemsList}
+                    data={filteredList}
                     renderItem={itemData =>
                         (
                             <ListItem
                                 id={itemData.item.fireID}
                                 onDelete={removeGoalHandler}
-                                title={itemData.item.itemName} />
+                                title={itemData.item.itemName} 
+                                item={itemData.item}/>
                         )} />
             </View>
 
             <View style={styles.buttons}>
-                <TouchableOpacity style={styles.historyContainer} onPress ={() => {setDisplayHistory(true)}}>
+                <TouchableOpacity style={styles.historyContainer} onPress={() => { setDisplayHistory(true) }}>
                     <View style={styles.historyContainer}>
                         <Text style={styles.text}>History</Text>
                         <Ionicons name='md-list' size={32} color='black' />
@@ -118,6 +127,11 @@ const styles = StyleSheet.create({
         padding: 50,
         flex: 1,
         // backgroundColor: Platform.OS === 'android' ? '#000' : '#ff0'
+    },
+    titleText: {
+        textAlign:'center',
+        fontSize: 24,
+        color: '#000'
     },
     list: {
         // backgroundColor: '#bbffbb',

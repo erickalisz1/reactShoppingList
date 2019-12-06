@@ -8,7 +8,7 @@ const ListItem = props => {
 
         <View style={styles.listItem} >
             <Text>{props.title}</Text>
-            <TouchableOpacity onPress={props.onDelete.bind(this, props.id)} >
+            <TouchableOpacity onPress={props.onDelete.bind(this, props.id, props.item)} >
                 <Ionicons name='md-checkmark' size={20} color='#f66' />
             </TouchableOpacity>
         </View>

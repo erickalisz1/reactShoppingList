@@ -11,10 +11,10 @@ const InputItem = props => {
         setEnteredGoal(enteredText);
     };
 
-    const addGoalHandler = () => {
+    const addToFirebase = () => {
 
-        props.onAddGoal(enteredItem);
-        setEnteredGoal('');
+        props.onAddGoal();
+        // setEnteredGoal('');
 
         let now = new Date();
 
@@ -58,7 +58,7 @@ const InputItem = props => {
                     </View>
                     <View style={styles.button} >
 
-                        <Button title="Add" onPress={addGoalHandler} />
+                        <Button title="Add" onPress={addToFirebase} />
 
                     </View>
 
