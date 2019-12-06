@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
 import firebase from 'firebase';
-import { firebaseConfig } from "./assets/fireConfig";
 import { AppLoading } from 'expo';
-import ShoppingItem from "./ShoppingItem";
 import { Ionicons } from '@expo/vector-icons';
 
-import GoalItem from './components/GoalItem';
-import GoalInput from './components/GoalInput';
+import ShoppingItem from './ShoppingItem';//model class
+import { firebaseConfig } from './assets/fireConfig';
+import ListItem from './components/ListItem';
+import InputItem from './components/InputItem';
 
 firebase.initializeApp(firebaseConfig);
 
@@ -60,10 +60,20 @@ export default function App() {
     setIsAddMode(false);
   };
 
-  const removeGoalHandler = goalID => {
+  const removeGoalHandler = firebaseKey => {
     setCourseGoals(currentGoals => {
-      return currentGoals.filter((goal) => goal.id !== goalID);
+      return currentGoals.filter((goal) => goal.id !== firebaseKey);
     });
+
+    firebase.database()
+    .ref('shopping/')//table name
+    .child(firebaseKey)//entry to remove
+    .remove()
+    .then(() => {
+      console.log('DELETED !');
+    }).catch((error) => {
+      console.log(error);
+    });;
   }
 
   const cancelGoal = () => {
@@ -73,11 +83,7 @@ export default function App() {
   return (
     <View style={styles.screen} >
 
-      <GoalInput visible={isAddMode} onAddGoal={addGoalHandler} onCancel={cancelGoal} />
-
-      {/* <Text>Refresh</Text> */}
-
-
+      <InputItem visible={isAddMode} onAddGoal={addGoalHandler} onCancel={cancelGoal} />
 
       <View style={styles.listContainer}>
         <FlatList
@@ -86,7 +92,7 @@ export default function App() {
           data={itemsList}
           renderItem={itemData =>
             (
-              <GoalItem
+              <ListItem
                 id={itemData.item.fireID}
                 onDelete={removeGoalHandler}
                 title={itemData.item.itemName} />
@@ -98,8 +104,8 @@ export default function App() {
           <Text style={styles.textR}>Refresh</Text>
           <Ionicons name='md-refresh' size={32} color='white' />
         </View>
-        </TouchableOpacity>
-      
+      </TouchableOpacity>
+
 
       <TouchableOpacity onPress={() => setIsAddMode(true)} style={styles.buttonContainer} >
         <View style={styles.buttonContainer}>
@@ -123,7 +129,7 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flex: 8,
-    margin:20
+    margin: 20
   },
   buttonContainer: {
     display: 'flex',
@@ -142,13 +148,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 35,
     backgroundColor: '#6666ff',
-    marginVertical:10
+    marginVertical: 10
   },
   text: {
     fontSize: 20
   },
   textR: {
     fontSize: 20,
-    color:'white'
+    color: 'white'
   }
 });

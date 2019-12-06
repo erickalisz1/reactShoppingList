@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Modal } from 'react-native';
 import firebase from 'firebase';
 
-const GoalInput = props => {
+const InputItem = props => {
 
     const [enteredGoal, setEnteredGoal] = useState('');//empty string argument as default, function to change the text 
 
@@ -87,4 +87,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default GoalInput;
+export default InputItem;

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const GoalItem = props => {
+const ListItem = props => {
     
     return (
 
@@ -30,4 +30,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default GoalItem;
+export default ListItem;
