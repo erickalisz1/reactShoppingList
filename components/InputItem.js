@@ -1,41 +1,55 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Modal } from 'react-native';
 import firebase from 'firebase';
+import ShoppingItem from '../ShoppingItem';
 
 const InputItem = props => {
 
-    const [enteredItem, setEnteredGoal] = useState('');//empty string argument as default, function to change the text 
+    const [enteredItem, setEnteredItem] = useState('');//empty string argument as default, function to change the text 
 
-    //function in a function
-    const goalInputHandler = (enteredText) => {//this JS syntax is identical to having a function
-        setEnteredGoal(enteredText);
+    //function in firebaseKey function
+    const goalInputHandler = (enteredText) => {//this JS syntax is identical to having firebaseKey function
+        setEnteredItem(enteredText);
     };
 
     const addToFirebase = () => {
 
-        props.onAddGoal();
-        // setEnteredGoal('');
+        
+        // setEnteredItem('');
 
         let now = new Date();
 
-        firebase.database().ref('shopping/').push(
+        const item = new ShoppingItem();
+
+        item.itemName = enteredItem;
+        item.enteredDate = //building date string 05/12/2019 at 11h31m19s
+            (now.getDay()) + '/' + (now.getMonth() + 1) + '/' + now.getFullYear() +
+            ' at ' +
+            now.getHours() + 'h' + now.getMinutes() + 'm' + now.getSeconds() + 's';
+        item.isCompleted = 0;
+        item.completedDate = 'not Completed';
+
+        let firebaseKey = firebase.database().ref('shopping/').push(
             {
-                itemName: enteredItem,
-
-                enteredDate: //building date string 05/12/2019 at 11h31m19s
-                    (now.getDay()) + '/' + (now.getMonth() + 1) + '/' + now.getFullYear() +
-                    ' at ' +
-                    now.getHours() + 'h' + now.getMinutes() + 'm' + now.getSeconds() + 's',
-
-                isCompleted: 0,
-                completedDate: 'not Completed',
+                itemName: item.itemName,
+                enteredDate: item.enteredDate,
+                isCompleted: item.isCompleted,
+                completedDate: item.completedDate,
 
             }
-        ).then(() => {
-            console.log('INSERTED !');
-        }).catch((error) => {
-            console.log(error);
-        });
+        ).key;
+
+        item.fireID = firebaseKey;
+        console.log('Inserted: '+firebaseKey);
+
+        props.onAddGoal(item);
+        setEnteredItem('');
+
+        // then(() => {
+        //     console.log('INSERTED !');
+        // }).catch((error) => {
+        //     console.log(error);
+        // });
     };
 
     return (

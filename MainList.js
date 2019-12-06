@@ -36,7 +36,10 @@ const MainList = (props) => {
     });
 
     //onClick function
-    const addItemHandler = () => {
+    const addItemHandler = (item) => {
+        setItemsList(itemsList => [
+            ...itemsList, item
+        ])
         setDisplayContainer(false);
     };
 
@@ -44,16 +47,17 @@ const MainList = (props) => {
         setDisplayHistory(false);
     };
 
-    const removeGoalHandler = (firebaseKey, shoppingItem) => {
+    const removeGoalHandler = (shoppingItem) => {
 
         setItemsList(currentList => 
         {//visually removing from list
-            return currentList.filter(item => item.fireID !== firebaseKey);
+            return currentList.filter(item => item.fireID !== shoppingItem.fireID);
         });
 
         let now = new Date();
 
-        firebase.database().ref('shopping/' + firebaseKey).set(
+        //updating firebase
+        firebase.database().ref('shopping/' + shoppingItem.fireID).set(
             {
                 enteredDate: shoppingItem.enteredDate,
                 itemName: shoppingItem.itemName,
@@ -104,7 +108,7 @@ const MainList = (props) => {
                 <FlatList
 
                     // onRefresh={handleRefresh}
-                    refreshing={refreshing}
+                    // refreshing={refreshing}
 
                     keyExtractor={item => item.fireID}
                     style={styles.list}
@@ -114,7 +118,6 @@ const MainList = (props) => {
                             <ListItem
                                 id={itemData.item.fireID}
                                 onDelete={removeGoalHandler}
-                                title={itemData.item.itemName}
                                 item={itemData.item} />
                         )} />
             </View>
