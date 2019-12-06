@@ -46,7 +46,6 @@ export default function App() {
   }
 
   return(
-    <MainList itemsList = {itemsList}/>
+    <MainList firebaseList = {itemsList}/>
   );
 }
-

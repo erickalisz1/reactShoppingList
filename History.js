@@ -11,7 +11,7 @@ const History = (props) => {
                 <Text>History Page!!!!</Text>
 
                 <Button onPress={props.onClose} title="Close"/>
-                <Button onPress={() =>{ console.log(props.itemsList)}} title="display list"/>
+                <Button onPress={() =>{ console.log(props.list)}} title="display list"/>
 
             </View>
         </Modal>

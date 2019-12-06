@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
 import firebase from 'firebase';
 import { AppLoading } from 'expo';
@@ -11,18 +11,23 @@ import History from './History';
 
 
 
+
+
 const MainList = (props) => {
 
-    const { itemsList } = props;
+    let { firebaseList } = props;
 
-    // const [courseGoals, setCourseGoals] = useState([]);//empty array, which will grow as we press btn
+    const [itemsList, setItemsList] = useState(firebaseList);//empty array, which will grow as we press btn
     const [displayContainer, setDisplayContainer] = useState(false);
     const [displayHistory, setDisplayHistory] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
+
+
 
     //filtering data to display only not bought items
 
     let filteredList = [];
-    
+
     itemsList.forEach(element => {
         if (element.isCompleted === 0) {//if it has been completed
             // console.log(element);
@@ -41,23 +46,28 @@ const MainList = (props) => {
 
     const removeGoalHandler = (firebaseKey, shoppingItem) => {
 
+        setItemsList(currentList => 
+        {//visually removing from list
+            return currentList.filter(item => item.fireID !== firebaseKey);
+        });
+
         let now = new Date();
 
-        firebase.database().ref('shopping/'+firebaseKey).set(
+        firebase.database().ref('shopping/' + firebaseKey).set(
             {
-                enteredDate:shoppingItem.enteredDate,
-                itemName:shoppingItem.itemName,
+                enteredDate: shoppingItem.enteredDate,
+                itemName: shoppingItem.itemName,
                 isCompleted: 1,
                 completedDate: (now.getDay()) + '/' + (now.getMonth() + 1) + '/' + now.getFullYear() +
-                ' at ' +
-                now.getHours() + 'h' + now.getMinutes() + 'm' + now.getSeconds() + 's',
+                    ' at ' +
+                    now.getHours() + 'h' + now.getMinutes() + 'm' + now.getSeconds() + 's',
             }
         ).then(() => {
             console.log('Updated !');
         }).catch((error) => {
             console.log(error);
         });
-        
+
         // firebase.database()
         //     .ref('shopping/')//table name
         //     .child(firebaseKey)//entry to remove
@@ -73,6 +83,15 @@ const MainList = (props) => {
         setDisplayContainer(false);
     };
 
+    // console.log(itemsList);
+
+    useEffect(() => {
+        setRefreshing(true);
+    }, () => { refreshList() }
+    );
+
+
+
     return (
         <View style={styles.screen} >
 
@@ -83,6 +102,10 @@ const MainList = (props) => {
 
             <View style={styles.listContainer}>
                 <FlatList
+
+                    // onRefresh={handleRefresh}
+                    refreshing={refreshing}
+
                     keyExtractor={item => item.fireID}
                     style={styles.list}
                     data={filteredList}
@@ -91,8 +114,8 @@ const MainList = (props) => {
                             <ListItem
                                 id={itemData.item.fireID}
                                 onDelete={removeGoalHandler}
-                                title={itemData.item.itemName} 
-                                item={itemData.item}/>
+                                title={itemData.item.itemName}
+                                item={itemData.item} />
                         )} />
             </View>
 
@@ -104,7 +127,7 @@ const MainList = (props) => {
                     </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.refreshContainer}>
+                <TouchableOpacity style={styles.refreshContainer} onPress={() => { setRefreshing(true) }}>
                     <View style={styles.refreshContainer}>
                         <Text style={styles.textR}>Refresh</Text>
                         <Ionicons name='md-refresh' size={32} color='white' />
@@ -129,7 +152,7 @@ const styles = StyleSheet.create({
         // backgroundColor: Platform.OS === 'android' ? '#000' : '#ff0'
     },
     titleText: {
-        textAlign:'center',
+        textAlign: 'center',
         fontSize: 24,
         color: '#000'
     },
