@@ -15,7 +15,15 @@ const MainList = (props) => {
 
     const {itemsList} = props;
 
-    console.log(itemsList);
+    //filtering data to display only not bought items
+
+    itemsList.forEach(element => {
+        if(element.isCompleted === 1)
+        {//if it has been completed
+            itemsList.splice(itemsList.indexOf(element) , 1);//remove it
+        }
+        return itemsList;
+    });
 
     const [courseGoals, setCourseGoals] = useState([]);//empty array, which will grow as we press btn
     const [displayContainer, setDisplayContainer] = useState(false);
@@ -47,7 +55,7 @@ const MainList = (props) => {
             .child(firebaseKey)//entry to remove
             .remove()
             .then(() => {
-                console.log('DELETED !');
+                console.log('DELETED!');
             }).catch((error) => {
                 console.log(error);
             });;
@@ -57,11 +65,13 @@ const MainList = (props) => {
         setDisplayContainer(false);
     };
 
+    console.log(itemsList);
+
     return (
         <View style={styles.screen} >
 
             <InputItem visible={displayContainer} onAddGoal={addGoalHandler} onCancel={cancelGoal} />
-            <History visible={displayHistory} onClose={displayHistoryHandler}/>
+            <History visible={displayHistory} onClose={displayHistoryHandler} list = {itemsList}/>
 
             <View style={styles.listContainer}>
                 <FlatList

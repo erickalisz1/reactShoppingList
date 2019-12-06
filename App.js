@@ -21,7 +21,7 @@ const fetchList = () => {
       item.itemName = childSnapshot.val().itemName;
       item.enteredDate = childSnapshot.val().enteredDate;
       item.isCompleted = childSnapshot.val().isCompleted;
-      item.completedDate = childSnapshot.val().isCompleted;
+      item.completedDate = childSnapshot.val().completedDate;
 
       itemsList.push(item);
     });
