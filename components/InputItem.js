@@ -4,7 +4,7 @@ import firebase from 'firebase';
 
 const InputItem = props => {
 
-    const [enteredGoal, setEnteredGoal] = useState('');//empty string argument as default, function to change the text 
+    const [enteredItem, setEnteredGoal] = useState('');//empty string argument as default, function to change the text 
 
     //function in a function
     const goalInputHandler = (enteredText) => {//this JS syntax is identical to having a function
@@ -12,20 +12,30 @@ const InputItem = props => {
     };
 
     const addGoalHandler = () => {
-        
-        props.onAddGoal(enteredGoal);
+
+        props.onAddGoal(enteredItem);
         setEnteredGoal('');
+
+        let now = new Date();
 
         firebase.database().ref('shopping/').push(
             {
-              itemName: enteredGoal,
-              dateEntered: new Date().getDate()          
+                itemName: enteredItem,
+
+                enteredDate: //building date string 05/12/2019 at 11h31m19s
+                    (now.getDay()) + '/' + (now.getMonth() + 1) + '/' + now.getFullYear() +
+                    ' at ' +
+                    now.getHours() + 'h' + now.getMinutes() + 'm' + now.getSeconds() + 's',
+
+                isCompleted: 0,
+                completedDate: 'not Completed',
+
             }
-          ).then(() => {
+        ).then(() => {
             console.log('INSERTED !');
-          }).catch((error) => {
+        }).catch((error) => {
             console.log(error);
-          });
+        });
     };
 
     return (
@@ -37,7 +47,7 @@ const InputItem = props => {
                     placeholderTextColor="#323232"
                     style={styles.input}
                     onChangeText={goalInputHandler}
-                    value={enteredGoal} />
+                    value={enteredItem} />
 
                 <View style={styles.buttons}>
 
@@ -49,7 +59,7 @@ const InputItem = props => {
                     <View style={styles.button} >
 
                         <Button title="Add" onPress={addGoalHandler} />
-                        
+
                     </View>
 
                 </View>
@@ -72,9 +82,9 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         margin: 10,
         padding: 10,
-        textAlign:"center",
-        fontSize:20,
-        color:'#323232'
+        textAlign: "center",
+        fontSize: 20,
+        color: '#323232'
     },
 
     buttons: {
