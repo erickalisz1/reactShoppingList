@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 // import { Ionicons } from '@expo/vector-icons';TouchableOpacity
 
 const HistoryItem = props => {
@@ -9,12 +9,14 @@ const HistoryItem = props => {
     return (
 
         <View style={styles.listItem} >
-            <Text style={styles.title}>{item.itemName}</Text>
-            <Text style={styles.date}>Entered at: {item.enteredDate}</Text>
-            <Text style={styles.date}>Completed at {item.completedDate}</Text>
-            {/* <TouchableOpacity onPress={props.onDelete.bind(this, props.item)} >
-                <Ionicons name='md-trash' size={20} color='#f66' />
-            </TouchableOpacity> */}
+            <TouchableOpacity onLongPress={props.onDelete.bind(this, props.item)} >
+
+                <Text style={styles.title}>{item.itemName}</Text>
+                <Text style={styles.date}>Entered at: {item.enteredDate}</Text>
+                <Text style={styles.date}>Completed at {item.completedDate}</Text>
+                {/* <Ionicons name='md-trash' size={20} color='#f66' /> */}
+
+            </TouchableOpacity>
         </View>
 
     );
@@ -23,7 +25,7 @@ const HistoryItem = props => {
 const styles = StyleSheet.create({
 
     listItem: {
-        display:'flex',
+        display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         padding: 10,
@@ -31,13 +33,14 @@ const styles = StyleSheet.create({
         borderColor: '#ddd',
         borderWidth: 1,
     },
-    title:{
-        fontSize:20,
-        color:'green',
-        textAlign:'center'
+    title: {
+        fontSize: 20,
+        color: 'green',
+        textAlign: 'center',
+        marginVertical: 5
     },
-    date:{
-        textAlign:'right',
+    date: {
+        textAlign: 'right',
     }
 
 });

@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
 import firebase from 'firebase';
-import { AppLoading } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 
 import ShoppingItem from './ShoppingItem';//model class
@@ -19,7 +18,6 @@ const MainList = (props) => {
 
     const [itemsList, setItemsList] = useState(firebaseList);//empty array, which will grow as we press btn
     const [historyList, setHistoryList] = useState(itemsList);//empty array, which will grow as we press btn
-    // const [updatedItems, setUpdatedItems] = useState([]);//empty array, which will grow as we press btn
     const [displayContainer, setDisplayContainer] = useState(false);
     const [displayHistory, setDisplayHistory] = useState(false);
 
@@ -40,7 +38,8 @@ const MainList = (props) => {
     const addItemHandler = (item) => {
         setItemsList(itemsList => [
             ...itemsList, item
-        ])
+        ]);
+
         setDisplayContainer(false);
     };
 
@@ -66,8 +65,10 @@ const MainList = (props) => {
             ' at ' +
             now.getHours() + 'h' + now.getMinutes() + 'm' + now.getSeconds() + 's' );
 
+            console.log('---Updated Item: ',updatedItem);
+
         setHistoryList(historyList => [
-            ...historyList, updatedItem
+            ...historyList, updatedItem   
         ]);
 
         //updating firebase
