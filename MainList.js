@@ -20,7 +20,6 @@ const MainList = (props) => {
     const [itemsList, setItemsList] = useState(firebaseList);//empty array, which will grow as we press btn
     const [displayContainer, setDisplayContainer] = useState(false);
     const [displayHistory, setDisplayHistory] = useState(false);
-    const [refreshing, setRefreshing] = useState(false);
 
 
 
@@ -47,10 +46,9 @@ const MainList = (props) => {
         setDisplayHistory(false);
     };
 
-    const removeGoalHandler = (shoppingItem) => {
+    const removeItemHandler = (shoppingItem) => {
 
-        setItemsList(currentList => 
-        {//visually removing from list
+        setItemsList(currentList => {//visually removing from list
             return currentList.filter(item => item.fireID !== shoppingItem.fireID);
         });
 
@@ -87,14 +85,6 @@ const MainList = (props) => {
         setDisplayContainer(false);
     };
 
-    // console.log(itemsList);
-
-    useEffect(() => {
-        setRefreshing(true);
-    }, () => { refreshList() }
-    );
-
-
 
     return (
         <View style={styles.screen} >
@@ -106,39 +96,26 @@ const MainList = (props) => {
 
             <View style={styles.listContainer}>
                 <FlatList
-
-                    // onRefresh={handleRefresh}
-                    // refreshing={refreshing}
-
                     keyExtractor={item => item.fireID}
                     style={styles.list}
                     data={filteredList}
                     renderItem={itemData =>
                         (
                             <ListItem
-                                id={itemData.item.fireID}
-                                onDelete={removeGoalHandler}
+                                onDelete={removeItemHandler}
                                 item={itemData.item} />
                         )} />
             </View>
 
-            <View style={styles.buttons}>
-                <TouchableOpacity style={styles.historyContainer} onPress={() => { setDisplayHistory(true) }}>
-                    <View style={styles.historyContainer}>
-                        <Text style={styles.text}>History</Text>
-                        <Ionicons name='md-list' size={32} color='black' />
-                    </View>
-                </TouchableOpacity>
 
-                <TouchableOpacity style={styles.refreshContainer} onPress={() => { setRefreshing(true) }}>
-                    <View style={styles.refreshContainer}>
-                        <Text style={styles.textR}>Refresh</Text>
-                        <Ionicons name='md-refresh' size={32} color='white' />
-                    </View>
-                </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={styles.historyContainer} onPress={() => { setDisplayHistory(true) }}>
+                <View style={styles.historyContainer}>
+                    <Text style={styles.text}>History</Text>
+                    <Ionicons name='md-list' size={32} color='black' />
+                </View>
+            </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => setDisplayContainer(true)} style={styles.buttonContainer} >
+            <TouchableOpacity style={styles.buttonContainer} onPress={() => setDisplayContainer(true)} >
                 <View style={styles.buttonContainer}>
                     <Text style={styles.text}>Add New Item</Text>
                     <Ionicons name='md-add' size={32} color='#323232' />
@@ -152,16 +129,11 @@ const styles = StyleSheet.create({
     screen: {
         padding: 50,
         flex: 1,
-        // backgroundColor: Platform.OS === 'android' ? '#000' : '#ff0'
     },
     titleText: {
         textAlign: 'center',
         fontSize: 24,
         color: '#000'
-    },
-    list: {
-        // backgroundColor: '#bbffbb',
-        // marginHorizontal: 20
     },
     listContainer: {
         flex: 8,
@@ -175,17 +147,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 35,
         backgroundColor: '#66ff66',
-    },
-    refreshContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        flex: 1,
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        borderRadius: 35,
-        backgroundColor: '#6666ff',
-        marginVertical: 10,
-        marginLeft: 5
     },
     historyContainer: {
         display: 'flex',
@@ -201,14 +162,6 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 16
     },
-    textR: {
-        fontSize: 16,
-        color: 'white'
-    },
-    buttons: {
-        display: 'flex',
-        flexDirection: 'row',
-    }
 });
 
 export default MainList;
