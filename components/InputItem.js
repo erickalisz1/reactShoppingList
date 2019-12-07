@@ -42,7 +42,7 @@ const InputItem = props => {
         item.fireID = firebaseKey;
         console.log('Inserted: '+firebaseKey);
 
-        props.onAddGoal(item);
+        props.onAddItem(item);
         setEnteredItem('');
 
         // then(() => {

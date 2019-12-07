@@ -18,6 +18,8 @@ const MainList = (props) => {
     let { firebaseList } = props;
 
     const [itemsList, setItemsList] = useState(firebaseList);//empty array, which will grow as we press btn
+    const [historyList, setHistoryList] = useState(itemsList);//empty array, which will grow as we press btn
+    // const [updatedItems, setUpdatedItems] = useState([]);//empty array, which will grow as we press btn
     const [displayContainer, setDisplayContainer] = useState(false);
     const [displayHistory, setDisplayHistory] = useState(false);
 
@@ -54,22 +56,33 @@ const MainList = (props) => {
 
         let now = new Date();
 
+        let updatedItem = new ShoppingItem
+        (
+            shoppingItem.fireID,
+            shoppingItem.itemName,
+            shoppingItem.enteredDate,
+            1, 
+            (now.getDay()) + '/' + (now.getMonth() + 1) + '/' + now.getFullYear() +
+            ' at ' +
+            now.getHours() + 'h' + now.getMinutes() + 'm' + now.getSeconds() + 's' );
+
+        setHistoryList(historyList => [
+            ...historyList, updatedItem
+        ]);
+
         //updating firebase
-        firebase.database().ref('shopping/' + shoppingItem.fireID).set(
+        firebase.database().ref('shopping/' + updatedItem.fireID).set(
             {
-                enteredDate: shoppingItem.enteredDate,
-                itemName: shoppingItem.itemName,
-                isCompleted: 1,
-                completedDate: (now.getDay()) + '/' + (now.getMonth() + 1) + '/' + now.getFullYear() +
-                    ' at ' +
-                    now.getHours() + 'h' + now.getMinutes() + 'm' + now.getSeconds() + 's',
+                enteredDate: updatedItem.enteredDate,
+                itemName: updatedItem.itemName,
+                isCompleted: updatedItem.isCompleted,
+                completedDate: updatedItem.completedDate,
             }
         ).then(() => {
             console.log('Updated !');
         }).catch((error) => {
             console.log(error);
         });
-
         // firebase.database()
         //     .ref('shopping/')//table name
         //     .child(firebaseKey)//entry to remove
@@ -81,7 +94,7 @@ const MainList = (props) => {
         //     });
     }
 
-    const cancelGoal = () => {
+    const cancelInput = () => {
         setDisplayContainer(false);
     };
 
@@ -89,8 +102,8 @@ const MainList = (props) => {
     return (
         <View style={styles.screen} >
 
-            <InputItem visible={displayContainer} onAddGoal={addItemHandler} onCancel={cancelGoal} />
-            <History visible={displayHistory} onClose={displayHistoryHandler} list={itemsList} />
+            <InputItem visible={displayContainer} onAddItem={addItemHandler} onCancel={cancelInput} />
+            <History visible={displayHistory} onClose={displayHistoryHandler} list={historyList}/>
 
             <Text style={styles.titleText}>Items pending: {filteredList.length} </Text>
 

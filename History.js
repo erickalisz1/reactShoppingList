@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet, Modal, FlatList } from 'react-native';
 import HistoryItem from './components/HistoryItem';
+import PropTypes from "prop-types";
 
 const History = (props) => {
 
@@ -8,14 +9,21 @@ const History = (props) => {
 
     //filtering data to display only not bought items
 
-    let filteredList = [];
+    // let filteredList = [];
 
-    list.forEach(element => {
-        if (element.isCompleted === 1) {//if it has been completed
-            // console.log(element);
-            filteredList.push(element);//remove it
-        }
-    });
+    // list.forEach(element => {
+    //     if (element.isCompleted === 1) {//if it has been completed
+    //         // console.log(element);
+    //         filteredList.push(element);//remove it
+    //     }
+        
+    // });
+
+    // updatedItems.forEach(element => {
+    //     filteredList.push(element);
+    // });
+
+    if(props.visible === true) console.log(list);
 
     return (
         <Modal visible={props.visible} animationType='slide'>
@@ -25,7 +33,7 @@ const History = (props) => {
                     <FlatList
                         keyExtractor={item => item.fireID}
                         style={styles.list}
-                        data={filteredList}
+                        data={list.filter(item => item.isCompleted === 1)}
                         renderItem={itemData =>
                             (
                                 <HistoryItem
@@ -51,5 +59,9 @@ const styles = StyleSheet.create({
         margin: 20
     },
 });
+
+History.propTypes = {
+    list: PropTypes.array.isRequired
+  };
 
 export default History;
