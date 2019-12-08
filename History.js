@@ -10,9 +10,8 @@ const History = (props) => {
     const [itemsList, setItemsList] = useState(list);
     const [itemDeleted, setItemDeleted] = useState('');
 
-    if (props.visible) console.log(itemsList);
-
     const render = (itemData) => {
+        //removing the deleted item visually so we don't need to send another request to Firebase
         if (itemData.item.fireID !== itemDeleted) {
             return (
                 <HistoryItem
@@ -25,18 +24,19 @@ const History = (props) => {
 
     const removeItemHandler = (shoppingItem) => {
 
+        //broke this operation in two functions for better functionallity
         Alert.alert
             (
                 'Warning', //title
                 'This item will be\npermanently deleted', //message
-                [{ text: 'Ok', style: 'default', onPress: () => deleteItemFromFirebase(shoppingItem.fireID) }, //button 1
+                [{ text: 'Delete Item', style: 'default', onPress: () => deleteItemFromFirebase(shoppingItem.fireID) }, //button 1
                 { text: 'Cancel', style: 'cancel' }] //button 2
             );
     }
 
     const deleteItemFromFirebase = (key) => {
 
-        setItemDeleted(key);//agroa o q n funciona eh deletar daqui
+        setItemDeleted(key);//updating our array
 
         setItemsList(currentList => {//visually removing from list
             return currentList.filter(item => item.fireID !== key);
@@ -67,7 +67,7 @@ const History = (props) => {
                         renderItem={render} />
                 </View>
                 <View style={styles.buttonContainer}>
-                    <Button onPress={props.onClose} title="Dismiss" />
+                    <Button onPress={props.onClose} title="Go Back" />
                 </View>
 
             </View>

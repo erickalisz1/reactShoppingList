@@ -1,20 +1,18 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-// import { Ionicons } from '@expo/vector-icons';TouchableOpacity
 
 const HistoryItem = props => {
 
     const { item } = props; //extracting prop
-    // console.log(item);
+
     return (
 
         <View style={styles.listItem} >
             <TouchableOpacity onLongPress={props.onDelete.bind(this, props.item)} >
 
                 <Text style={styles.title}>{item.itemName}</Text>
-                <Text style={styles.date}>Entered at: {item.enteredDate}</Text>
-                <Text style={styles.date}>Completed at {item.completedDate}</Text>
-                {/* <Ionicons name='md-trash' size={20} color='#f66' /> */}
+                <Text style={styles.date}>Added at: {item.enteredDate}</Text>
+                <Text style={styles.date}>Bought at {item.completedDate}</Text>
 
             </TouchableOpacity>
         </View>

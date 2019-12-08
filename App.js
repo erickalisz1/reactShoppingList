@@ -23,7 +23,7 @@ const fetchList = () => {
       item.isCompleted = childSnapshot.val().isCompleted;
       item.completedDate = childSnapshot.val().completedDate;
 
-      itemsList.push(item);
+      itemsList.push(item);//populating our array of Model items
     });
 
   });
@@ -31,14 +31,11 @@ const fetchList = () => {
 
 export default function App() {
 
-  
   const [dataLoaded, setDataLoaded] = useState(false);
+  //this state will ensure that the app waits for the content to be fetched from Firebase
 
   if (!dataLoaded) 
   {
-    console.log('started at ' + new Date().getMilliseconds() + 'ms');
-    console.log('finished at ' + new Date().getMilliseconds() + 'ms');
-
     return <AppLoading
       startAsync={fetchList}
       onFinish={() => { setDataLoaded(true) }}

@@ -14,16 +14,13 @@ const InputItem = props => {
 
     const addToFirebase = () => {
 
-        
-        // setEnteredItem('');
-
         let now = new Date();
 
         const item = new ShoppingItem();
 
         item.itemName = enteredItem;
-        item.enteredDate = //building date string 05/12/2019 at 11h31m19s
-            (now.getDay()) + '/' + (now.getMonth() + 1) + '/' + now.getFullYear() +
+        item.enteredDate = //building date string 5/12/2019 at 11h31m19s
+            (now.getDate()) + '/' + (now.getMonth() + 1) + '/' + now.getFullYear() +
             ' at ' +
             now.getHours() + 'h' + now.getMinutes() + 'm' + now.getSeconds() + 's';
         item.isCompleted = 0;
@@ -44,12 +41,6 @@ const InputItem = props => {
 
         props.onAddItem(item);
         setEnteredItem('');
-
-        // then(() => {
-        //     console.log('INSERTED !');
-        // }).catch((error) => {
-        //     console.log(error);
-        // });
     };
 
     return (

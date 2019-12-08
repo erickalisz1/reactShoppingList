@@ -8,9 +8,13 @@ const ListItem = props => {
 
         <View style={styles.listItem} >
             <Text>{props.item.itemName}</Text>
+            
             <TouchableOpacity onPress={props.onDelete.bind(this, props.item)} >
-                <Ionicons name='md-checkmark' size={20} color='#f66' />
+                <View style={styles.icon}>
+                    <Ionicons name='md-checkmark' size={20} color='#f66' />
+                </View>
             </TouchableOpacity>
+            
         </View>
 
     );
@@ -27,7 +31,9 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         alignItems:'center'
     },
-
+    icon:{
+        padding:5//to make it easier to click
+    }
 });
 
 export default ListItem;
